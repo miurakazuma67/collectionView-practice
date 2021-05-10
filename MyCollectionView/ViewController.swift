@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+final class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
     private var collectionView: UICollectionView?
     private var colors: [UIColor] = [
@@ -27,7 +27,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         super.viewDidLoad()
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.itemSize = CGSize(width: view.frame.size.width/3.2,
+        layout.itemSize = CGSize(width: view.frame.size.width/3.6,
                                  height: view.frame.size.width/3.2)
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -58,6 +58,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: collectionView))
         case .ended:
             collectionView.endInteractiveMovement()
+            
         default:
             collectionView.cancelInteractiveMovement()
         }
@@ -68,13 +69,21 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         collectionView?.frame = view.bounds
     }
 
+    func makeColor() -> UIColor {
+            let r: CGFloat = CGFloat(arc4random_uniform(255)+1) / 255.0
+            let g: CGFloat = CGFloat(arc4random_uniform(255)+1) / 255.0
+            let b: CGFloat = CGFloat(arc4random_uniform(255)+1) / 255.0
+            let color: UIColor = UIColor(red: r, green: g, blue: b, alpha: 1.0)
+            
+            return color
+        }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return colors.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-        //セルの背景色をランダムに設定
         cell.backgroundColor = colors[indexPath.row]
         return cell
     }
@@ -84,8 +93,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     }
     
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        let item = colors.remove(at: sourceIndexPath.row)
-        colors.insert(item, at: destinationIndexPath.row)
+        colors.remove(at: sourceIndexPath.row)
+        colors.insert(makeColor(), at: destinationIndexPath.row)
     }
 }
 
